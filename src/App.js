@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
 
 
-    socket = io.connect('http://localhost:5000');
+    socket = io.connect('http://localhost:5000' || "https://sensational-lolly-f84033.netlify.app/server");
 
     socket.emit('new-user-joined', username);
 
