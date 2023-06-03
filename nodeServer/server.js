@@ -32,11 +32,10 @@ io.on('connection', (socket) => {
             name: users[socket.id]
         })
     })
-
-    delete users[socket.id];
     socket.on('disconnect', () => {
-        socket.broadcast.emit("",)
+        socket.broadcast.emit("user-disconnected", users[socket.id])
         console.log('user disconnected');
+        delete users[socket.id]
     });
 });
 

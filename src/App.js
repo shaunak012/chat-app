@@ -7,13 +7,11 @@ const username = prompt('What is your name?');
 function App() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
-  const [user, setUser] = useState('');
 
   useEffect(() => {
 
 
     socket = io.connect('http://localhost:5000');
-    setUser(username);
 
     socket.emit('new-user-joined', username);
 
@@ -24,6 +22,9 @@ function App() {
       append(data.name, data.message)
       //This line is printing 2 times
       //solution : turn off strict mode
+    });
+    socket.on('user-disconnected', (name) => {
+      append(name, ' left the chat');
     });
     return () => {
     }
