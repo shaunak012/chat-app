@@ -1,17 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import io from "socket.io-client"
 
+let socket
+const username = prompt('What is your name?');
 function App() {
-  const [messages, setMessages] = useState([{
-    sender: "Me",
-    content: "HI MUMMY"
-  }]);
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState('');
+  const [user, setUser] = useState('');
 
-  // Function to handle sending a message
+  useEffect(() => {
+
+
+    socket = io.connect('http://localhost:5000');
+    setUser(username);
+
+    socket.emit('new-user-joined', username);
+
+    socket.on('user-joined', (name) => {
+      append(name, ' joined the chat');
+    });
+    socket.on('recieve', (data) => {
+      append(data.name, data.message)
+      //This line is printing 2 times
+      //solution : turn off strict mode
+    });
+    return () => {
+    }
+  }, [])
+  const append = (user, data) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        sender: user,
+        content: data,
+      },
+    ]);
+  };
   const sendMessage = (e) => {
     e.preventDefault();
-    // Logic to send the message to the server or update the message state
+
+    if (message.trim() !== '') {
+      // append(user, message)
+      //messages me add karta hai
+
+      // Clear the message input field
+      setMessage('');
+
+      // Send the message to the server
+      socket.emit("send", message);
+    }
   };
+
+
   return (
     <>
       <div className="chat-app">
@@ -22,7 +63,7 @@ function App() {
         <div className="chat-messages">
           {/* Render the messages from the state */}
           {messages.map((message, index) => (
-            <div key={index} className="message">
+            <div key={index} className={`message`}>
               <span className="sender">{message.sender}: </span>
               <span className="content">{message.content}</span>
             </div>
@@ -33,9 +74,12 @@ function App() {
           <input
             type="text"
             placeholder="Type your message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+
           // Update the input value using state and onChange event
           />
-          <button type="submit">Send</button>
+          <button type="submit" >Send</button>
         </form>
       </div>
     </>
