@@ -8,8 +8,6 @@ __Global Chat__:Users can chat and interact on a global chat
 
 __Message history__: The app stores chat history, allowing users to view past conversations.
 
-## Upcoming features
-
 __Private and group chat__: Users can engage in private conversations with specific individuals or participate in group chats.
 
 ## Installation
